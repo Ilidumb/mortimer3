@@ -41,7 +41,7 @@ class mCogCommands(commands.Cog):
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def update(self,ctx):
-        await ctx.send('Restarting!')
+        await ctx.channel.send('Restarting!')
         from subprocess import Popen
         Popen('git-pull.bat') 
         time.sleep(8)

@@ -1,2 +1,2 @@
-mode con: cols=80 lines=40
+mode con: cols=40 lines=20
 python main.py

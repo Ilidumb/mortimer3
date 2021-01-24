@@ -1,2 +1,2 @@
-git pull mortimer3
+git pull mortimer3 master
 start start.bat

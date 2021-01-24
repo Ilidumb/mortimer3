@@ -57,12 +57,11 @@ async def apiai_sendmessage(self, content, author, message):
     json_response = MessageToJson(response)
     json_response = json.loads(json_response)
     print(f'[{self.current_time}] Odpowiedź: {json_response["queryResult"]["fulfillmentText"]}')
-    print(author)
-    if author == 'kipi' or author =='\~kipior' and json_response["queryResult"]["intent"]["displayName"] == 'kipi':
+    # !Checks for annoying ass motherfuckers.
+    if author in ['kipi','\~kipior'] and json_response["queryResult"]["intent"]["displayName"] == 'kipi':
         pass
     else:
         await message.channel.send(json_response['queryResult']['fulfillmentText'])
-    # print(json_response["queryResult"]["intent"]["displayName"])
     # TODO: NEEDS RETRAINING FOR <END OF CONVERSATION> TAG
     # if 'json_response['queryResult']['diagnosticInfo']['end_conversation']:
     #     self.namecheck = False

@@ -9,8 +9,8 @@ class mCogCommands(commands.Cog):
         self.current_time = time.strftime("%H:%M:%S", t)
         
     @commands.command(pass_context=True)
-    async def ping(ctx):
-        await ctx.channel.send('Pong! 1')
+    async def ping(self, ctx):
+        await ctx.send('Pong! 1')
     
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)

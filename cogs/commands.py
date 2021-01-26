@@ -27,10 +27,10 @@ class mCogCommands(commands.Cog):
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
-    async def say(self, ctx, channel):
-        ctx.message.content = re.sub(f"m!say", "", ctx.message.content)
-        await ctx.send(ctx.message.content)
-        print(f'[{self.current_time}] Ręcznie wysłano wiadomość: {ctx.message.content}.')
+    async def say(self, ctx, target_channel, *args):
+        channel = self.bot.get_channel(int(target_channel[2:20]))
+        await channel.send(" ".join(args[:]))
+        print(f'[{self.current_time}] Ręcznie wysłano wiadomość: {" ".join(args[:])}.')
     
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
@@ -56,7 +56,7 @@ class mCogCommands(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def pis(self,ctx,*args):
         pis.generate_meme('./pis.jpg', bottom_text=" ".join(args[:]))
-        await ctx.channel.send(file=File('meme-pis1.jpg'))
+        await ctx.channel.send(file=File('meme-pis.jpg'))
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)

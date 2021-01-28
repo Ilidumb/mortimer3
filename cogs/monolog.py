@@ -22,7 +22,7 @@ class monolog(commands.Cog):
         await main(self)
 
 async def main(self):
-    # self.chat_channel = self.bot.get_channel(int(config['chat-channel']))
+    self.chat_channel = self.bot.get_channel(int(config['chat-channel']))
     session_client = dialogflow.SessionsClient(credentials=credentials)
     session = session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
     text_input = dialogflow.types.TextInput(text=('community2nSH'), language_code=DIALOGFLOW_LANGUAGE_CODE)
@@ -31,7 +31,7 @@ async def main(self):
     await self.chat_channel.send(f"{response.query_result.fulfillment_text}")
     print(f"[{self.current_time}] Monolog: {response.query_result.fulfillment_text}")
 
-    await asyncio.sleep(randint(1200,1500))
+    await asyncio.sleep(randint(1800,2700))
     await main(self)
 
 

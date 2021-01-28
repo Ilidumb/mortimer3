@@ -3,7 +3,6 @@
 TODO:
     - SEPARATE DIALOG AND MONOLOGUE
     - MINECRAFT COMMANDS VIA BOT
-    - TWEETS VIA TWITTER API (ilidev account)
 DONE:
 - AUTOMATED GIT PULL (needs implementation)
 - CONFIG SYSTEM (needs creation file)
@@ -16,7 +15,7 @@ with open('config.json', 'r') as j:
     config = json.loads(j.read())
 
 token = config['token-discord']
-# DO NOT REMOVE!!!
+# !DO NOT REMOVE!!!
 intents = discord.Intents.default()  # All but the two privileged ones 
 intents.members = True  # Subscribe to the Members intent
 client = commands.Bot(command_prefix=config['command-prefix'],intents=intents)
@@ -30,5 +29,5 @@ async def on_ready():
 # Load in the cogs
 client.load_extension('cogs.dialog')
 client.load_extension('cogs.commands')
-# client.load_extension('cogs.monolog')
+client.load_extension('cogs.monolog')
 client.run(token)

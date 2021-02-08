@@ -79,7 +79,7 @@ async def df_sendmessage(self, content, author, message):
         for pCommand in pCommands:
             exec(pCommand)
             await asyncio.sleep(0.2)
-    except IndexError, KeyError:
+    except (IndexError, KeyError) as exception:
         pass
     print(f'[{self.current_time}] Odpowiedź: {json_response["queryResult"]["fulfillmentText"]}')
 

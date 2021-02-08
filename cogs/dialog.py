@@ -29,9 +29,6 @@ class dialog(commands.Cog):
                 await clean_message(self, message)
             elif self.namecheck:
                 await clean_message(self, message)
-        if str(message.author.display_name) == 'certyq':
-            if any(banned_url in message.content for banned_url in ["https://www.youtube.com/","https://youtu.be/","https://vm.tiktok.com","https://www.tiktok.com/", "gif", "htpps://tenor.com"]):
-                await message.delete()
                 
 async def clean_message(self, message):
     # *Removing the bot mention / name from the message

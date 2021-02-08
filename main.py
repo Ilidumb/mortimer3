@@ -30,4 +30,5 @@ async def on_ready():
 client.load_extension('cogs.dialog')
 client.load_extension('cogs.commands')
 client.load_extension('cogs.monolog')
+client.load_extension('cogs.misc')
 client.run(token)

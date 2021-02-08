@@ -52,7 +52,10 @@ async def clean_message(self, message):
     # TODO: RETRAIN TO NOT TRIGGER ON FIRST WORD (AUTHOR)
     # TO USE WHEN RETRAINED
     # content = f'{author}: {content}'
-    await df_sendmessage(self, content, author, message)
+    if author in ['kipi','\~kipior']:
+        pass
+    else:
+        await df_sendmessage(self, content, author, message)
 
 async def df_sendmessage(self, content, author, message):
     # *Send request to the Dialogflow API

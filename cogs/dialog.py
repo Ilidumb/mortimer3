@@ -81,7 +81,10 @@ async def df_sendmessage(self, content, author, message):
     print(f'[{self.current_time}] Odpowiedź: {json_response["queryResult"]["fulfillmentText"]}')
 
     # *Checks for annoying ass motherfuckers.
-    await message.channel.send(json_response['queryResult']['fulfillmentText'])
+    if author in ['kipi','\~kipior'] and json_response["queryResult"]["intent"]["displayName"] == 'kipi':
+        pass
+    else:
+        await message.channel.send(json_response['queryResult']['fulfillmentText'])
     # TODO: NEEDS RETRAINING FOR <END OF CONVERSATION> TAG
     # if 'json_response['queryResult']['diagnosticInfo']['end_conversation']:
     #     self.namecheck = False

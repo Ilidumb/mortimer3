@@ -1,6 +1,8 @@
 from discord.ext import commands
 from discord import Guild, File
 import asyncio, re, time, os, requests, pis
+from os import listdir
+from os.path import isfile, join
 
 class mCogCommands(commands.Cog):
     def __init__(self, bot):
@@ -60,9 +62,43 @@ class mCogCommands(commands.Cog):
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
-    async def denizen(self,ctx,arg):
+    async def denizen(self,ctx):
         denizen_source = ctx.message.attachments[0].url
         r = requests.get(denizen_source, allow_redirects=True)
-        open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+arg+'.dsc', 'wb').write(r.content)
+        open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
+
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def lsdenizen(self,ctx):
+        denizen_list = [f for f in listdir(r'C:\MinecraftServer\plugins\Denizen\scripts\\') if isfile(join(r'C:\MinecraftServer\plugins\Denizen\scripts\\', f))]
+        lsoutput = ''
+        for file in denizen_list:
+            lsoutput = f'{lsoutput}`{file}`\n'
+        await ctx.channel.send(lsoutput)
+
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def getdenizen(self,ctx,arg):
+        await ctx.channel.send(file=File(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+arg+'.dsc'))
+
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def schem(self,ctx):
+        schem_source = ctx.message.attachments[0].url
+        r = requests.get(schem_source, allow_redirects=True)
+        open(r'C:\MinecraftServer\plugins\WorldEdit\schematics\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
+
+
+
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def insult(self,ctx,user,target_channel):
+        insults = """ty świński ryju, ty świński ogonie, ty świńska nóżko, ty golonko, ty fałdo, ty grubasie, ty pyzo, ty klucho, ty kicho, ty pulpecie, ty żłobie, ty gnomie, ty glisto, ty cetyńcu, ty zarazo pełzakowa, ty gadzie, ty jadzie, ty ospo, dyfteroidzie, ty pasożycie, ty trutniu, ty trądzie, ty swądzie, ty hieno, ty szakalu, ty kanalio, ty katakumbo, ty hekatombo, ty przykry typie, ty koszmarku, ty bufonie, ty farmazonie, ty kameleonie, ty chorągiewko na dachu, ty taki nie taki, ty ni w pięć ni w dziewięć ni w dziewiętnaście, ty smutasie, ty jaglico, ty zaćmo, ty kaprawe oczko, ty zezowate oczko, ty kapusiu, ty wiraszko, ty ślipku, ty szpiclu, ty hyclu, ty przykry typie, ty kicie, ty kleju, ty gumozo, ty gutaperko, ty kalafonio, ty wazelino, ty gliceryno, ty lokaju, ty lizusie, ty smoczku, ty klakierze, ty pozerze, ty picerze, ty picusiu, ty lalusiu, ty kabotynie, ty luju pasiaty, ty kowboju na garbatym koniu, ty klocu, ty młocie, ty piło, ty szprycho, ty graco, ty ruro nieprzeczyszczona, ty zadro, ty drapaku, ty drucie, ty draniu, ty przykry typie, ty kapitalisto, ty neokolonialisto, ty burżuju rumiany,"""
+        insult_list = insults.split(', ')
+        channel = self.bot.get_channel(int(target_channel[2:20]))
+        for insult in insult_list:
+            await channel.send(f'{user}, {insult}')
+            await asyncio.sleep(0.5)
+
 def setup(bot):
     bot.add_cog(mCogCommands(bot))

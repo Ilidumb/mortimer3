@@ -11,6 +11,16 @@ class mCogCommands(commands.Cog):
         self.current_time = time.strftime("%H:%M:%S", t)
         
     @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def spam(self, ctx, target_channel, user, *args):
+        print(ctx.message.content)
+        channel = self.bot.get_channel(int(target_channel[2:20]))
+        i = 1
+        while i < 3:
+            await channel.send(f"{user} "+" ".join(args[:]))
+            i += 1
+            await asyncio.sleep(0.5)
+    @commands.command(pass_context=True)
     async def ping(self, ctx):
         await ctx.send('Pong! 1')
     
@@ -65,7 +75,11 @@ class mCogCommands(commands.Cog):
     async def denizen(self,ctx):
         denizen_source = ctx.message.attachments[0].url
         r = requests.get(denizen_source, allow_redirects=True)
-        open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
+        try:
+            open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
+            open(r'C:\MinecraftServer\plugins\Denizen\backup\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
+        except FileNotFoundError:
+            await ctx.channel.send('Uh oh! Coś poszło nie tak!')
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
@@ -83,12 +97,18 @@ class mCogCommands(commands.Cog):
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
+    async def deldenizen(self,ctx,arg):
+        try:
+            os.remove(r"C:\MinecraftServer\plugins\Denizen\scripts\\"+arg+".dsc")
+        except FileNotFoundError:
+            await ctx.channel.send('Uh oh! Ten plik nie istnieje! (nie musisz dawać .dsc w nazwie pliku)')
+
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
     async def schem(self,ctx):
         schem_source = ctx.message.attachments[0].url
         r = requests.get(schem_source, allow_redirects=True)
         open(r'C:\MinecraftServer\plugins\WorldEdit\schematics\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
-
-
 
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)

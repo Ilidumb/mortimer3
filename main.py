@@ -1,12 +1,7 @@
 '''
-# MORTIMER VERSION 3.0 #
+# MORTIMER VERSION 3.3 #
 TODO:
-    - SEPARATE DIALOG AND MONOLOGUE
-    - MINECRAFT COMMANDS VIA BOT
-DONE:
-- AUTOMATED GIT PULL (needs implementation)
-- CONFIG SYSTEM (needs creation file)
-- NEW MESSAGE SYNTAX (needs retraining)
+
 '''
 import discord, json
 from discord.ext import commands
@@ -31,4 +26,5 @@ client.load_extension('cogs.dialog')
 client.load_extension('cogs.commands')
 client.load_extension('cogs.monolog')
 client.load_extension('cogs.misc')
+client.load_extension('cogs.messagecounter')
 client.run(token)

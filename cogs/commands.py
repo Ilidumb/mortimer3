@@ -1,6 +1,6 @@
+import asyncio, time, os, requests, pis
 from discord.ext import commands
 from discord import File
-import asyncio, time, os, requests, pis
 from os import listdir
 from os.path import isfile, join
 
@@ -41,11 +41,13 @@ class mCogCommands(commands.Cog):
         except:
             print("EnvironmentError")
             self.bot.clear()
-    
+
     # * Update command, mega janky (it works though)
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def update(self,ctx):
+        # Make sure the messagecounter is saved before updating and restarting
+        await ctx.invoke(self.bot.get_command('fsaveactivity'))
         await ctx.channel.send('Restarting!')
         # Run git pull and restart
         from subprocess import Popen

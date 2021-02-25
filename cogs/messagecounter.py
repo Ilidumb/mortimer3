@@ -25,7 +25,6 @@ class mCogMessageCounter(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def fsaveactivity(self, ctx):
         saveactivity(self)
-        await ctx.channel.send('Zapisano!')
         
     # * Show todays messagecount
     @commands.command(pass_context=True)

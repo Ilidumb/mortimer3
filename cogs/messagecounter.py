@@ -18,23 +18,15 @@ class mCogMessageCounter(commands.Cog):
     # * Count save loop, runs every 30 minutes
     @tasks.loop(minutes=30)
     async def save_messagecount(self):
-        with open('messagecount.json') as messagecount_json:
-            data = json.load(messagecount_json)
-            try:
-                # Update todays messagecount
-                data[today()] += self.messagecount
-            # If no data from that day:
-            except KeyError:
-                # Create new key with the current messagecount
-                data.update({today(): self.messagecount})
-            # Update the total messagecount
-            data["total"] += self.messagecount
-            # Reset the messagecount
-            self.messagecount = 0
-        # Save the messagecount, indent = 4 formats the file to be readable by humans
-        with open('messagecount.json', 'w') as outfile:
-            json.dump(data, outfile, indent=4)
+        saveactivity(self)
     
+    # * Force save messagecount
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def fsaveactivity(self, ctx):
+        saveactivity(self)
+        await ctx.channel.send('Zapisano!')
+        
     # * Show todays messagecount
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
@@ -58,7 +50,25 @@ class mCogMessageCounter(commands.Cog):
         with open('messagecount.json') as messagecount_json:
             data = json.load(messagecount_json)
             await ctx.channel.send(f'Średnia ilość wiadomości: {round(data["total"] / (len(data)-1))}')
-    
+
+def saveactivity(self):
+    with open('messagecount.json') as messagecount_json:
+        data = json.load(messagecount_json)
+        try:
+            # Update todays messagecount
+            data[today()] += self.messagecount
+        # If no data from that day:
+        except KeyError:
+            # Create new key with the current messagecount
+            data.update({today(): self.messagecount})
+        # Update the total messagecount
+        data["total"] += self.messagecount
+        # Reset the messagecount
+        self.messagecount = 0
+    # Save the messagecount, indent = 4 formats the file to be readable by humans
+    with open('messagecount.json', 'w') as outfile:
+        json.dump(data, outfile, indent=4)
+
 def today():
     return time.strftime('%m-%d')
 

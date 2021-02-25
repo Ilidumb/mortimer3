@@ -12,7 +12,7 @@ class mCogMessageCounter(commands.Cog):
     # * Message Counter, if a player sent a message in minecraft, it gets counted
     @commands.Cog.listener()
     async def on_message(self ,message):
-        if ' » ' in message.content and str(message.channel) in self.channels and message.author.bot and message.author.id != self.bot.user.id:
+        if str(message.channel) == self.channels[0] and message.author.id != self.bot.user.id:
             self.messagecount += 1
 
     # * Count save loop, runs every 30 minutes

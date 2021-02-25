@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord import Guild, File
+from discord import File
 import asyncio, time, os, requests, pis
 from os import listdir
 from os.path import isfile, join
@@ -7,12 +7,10 @@ from os.path import isfile, join
 class mCogCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        t = time.localtime()
-        self.current_time = time.strftime("%H:%M:%S", t)
         
     @commands.command(pass_context=True)
     async def ping(self, ctx):
-        await ctx.send('Pong! 1')
+        await ctx.send(current_time())
     
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
@@ -22,7 +20,7 @@ class mCogCommands(commands.Cog):
         async for message in channel.history(limit=amount):
             messages.append(message)
         await channel.delete_messages(messages)
-        print(f'[{self.current_time}] Usunięto {amount} wiadomości.')
+        print(f'[{current_time()}] Usunięto {amount} wiadomości.')
         deletemessage = await message.channel.send('Usunięto! :wink:')
         await asyncio.sleep(3)
         await deletemessage.delete()
@@ -32,7 +30,7 @@ class mCogCommands(commands.Cog):
     async def say(self, ctx, target_channel, *args):
         channel = self.bot.get_channel(int(target_channel[2:20]))
         await channel.send(" ".join(args[:]))
-        print(f'[{self.current_time}] Ręcznie wysłano wiadomość: {" ".join(args[:])}.')
+        print(f'[{current_time()}] Ręcznie wysłano wiadomość: {" ".join(args[:])}.')
     
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
@@ -65,7 +63,7 @@ class mCogCommands(commands.Cog):
     async def pis(self,ctx,*args):
         pis.generate_meme('./pis.jpg', bottom_text=" ".join(args[:]))
         await ctx.channel.send(file=File('meme-pis.jpg'))
-        print(f'[{self.current_time}] Wygenerowano pasek TVPiS o wartości: {" ".join(args[:])}.')
+        print(f'[{current_time()}] Wygenerowano pasek TVPiS o wartości: {" ".join(args[:])}.')
 
     # * Upload Denizen script
     @commands.command(pass_context=True)
@@ -73,18 +71,20 @@ class mCogCommands(commands.Cog):
     async def denizen(self,ctx):
         try:
             denizen_source = ctx.message.attachments[0].url
+            denizen_name = ctx.message.attachments[0].filename
+            r = requests.get(denizen_source, allow_redirects=True)
+            try:
+                # Save script
+                open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+denizen_name, 'wb').write(r.content)
+                # Backup script
+                open(r'C:\MinecraftServer\plugins\Denizen\backup\\'+denizen_name, 'wb').write(r.content)
+                await ctx.channel.send(f'Uploading {denizen_name}!')
+                print(f'[{current_time()}] Wgrano skrypt denizen o nazwie: {denizen_name}')
+            except FileNotFoundError:
+                await ctx.channel.send('Uh oh! Coś poszło nie tak!')
+                print(f'[{current_time()}] Błąd przy wgrywaniu skryptu denizen o nazwie: {denizen_name}')
         except IndexError:
-            pass
-        r = requests.get(denizen_source, allow_redirects=True)
-        try:
-            open(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
-            # Backup scripts
-            open(r'C:\MinecraftServer\plugins\Denizen\backup\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
-            await ctx.channel.send(f'Uploading {ctx.message.attachments[0].filename}!')
-            print(f'[{self.current_time}] Wgrano skrypt denizen o nazwie: {ctx.message.attachments[0].filename}')
-        except FileNotFoundError:
-            await ctx.channel.send('Uh oh! Coś poszło nie tak!')
-            print(f'[{self.current_time}] Błąd przy wgrywaniu skryptu denizen o nazwie: {ctx.message.attachments[0].filename}')
+            await ctx.channel.send('Uh oh! Coś poszło nie tak! Chyba nie podałeś pliku!')
 
     # * List all Denizen scripts
     @commands.command(pass_context=True)
@@ -96,14 +96,14 @@ class mCogCommands(commands.Cog):
         for file in denizen_list:
             lsoutput = f'{lsoutput}`{file}`\n'
         await ctx.channel.send(lsoutput)
-        print(f'[{self.current_time}] Podano listę skryptów denizen.')
+        print(f'[{current_time()}] Podano listę skryptów denizen.')
 
     # * Download Denizen script
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def getdenizen(self,ctx,arg):
         await ctx.channel.send(file=File(r'C:\MinecraftServer\plugins\Denizen\scripts\\'+arg+'.dsc'))
-        print(f'[{self.current_time}] Wysłano skrypt denizen o nazwie: {arg}')
+        print(f'[{current_time()}] Wysłano skrypt denizen o nazwie: {arg}')
 
     # * Delete Denizen script
     @commands.command(pass_context=True)
@@ -112,24 +112,49 @@ class mCogCommands(commands.Cog):
         try:
             os.remove(r"C:\MinecraftServer\plugins\Denizen\scripts\\"+arg+".dsc")
             await ctx.channel.send(f'Removing {arg}!')
-            print(f'[{self.current_time}] Usunięto skrypt denizen o nazwie: {arg}')
+            print(f'[{current_time()}] Usunięto skrypt denizen o nazwie: {arg}')
         except FileNotFoundError:
             await ctx.channel.send('Uh oh! Ten plik nie istnieje! (nie musisz dawać .dsc w nazwie pliku)')
-            print(f'[{self.current_time}] Błąd podczas usuwania skrypt denizen o nazwie: {arg}')
+            print(f'[{current_time()}] Błąd podczas usuwania skrypt denizen o nazwie: {arg}')
             
     # * Upload schematic
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def schem(self,ctx):
-        schem_source = ctx.message.attachments[0].url
-        r = requests.get(schem_source, allow_redirects=True)
         try:
-            ctx.channel.send(f'Uploading {ctx.message.attachments[0].filename}')
-            open(r'C:\MinecraftServer\plugins\WorldEdit\schematics\\'+ctx.message.attachments[0].filename, 'wb').write(r.content)
-            print(f'[{self.current_time}] Wgrano schematic o nazwie: {ctx.message.attachments[0].filename}')
-        except FileNotFoundError:
-            ctx.channel.send('Uh oh! Coś poszło nie tak!')
-            print(f'[{self.current_time}] Błąd podczas wgrywania schematic o nazwie: {ctx.message.attachments[0].filename}')
+            schem_source = ctx.message.attachments[0].url
+            schem_name = ctx.message.attachments[0].filename
+            r = requests.get(schem_source, allow_redirects=True)
+            try:
+                await ctx.channel.send(f'Uploading {schem_name}')
+                open(r'C:\MinecraftServer\plugins\WorldEdit\schematics\\'+schem_name, 'wb').write(r.content)
+                print(f'[{current_time()}] Wgrano schematic o nazwie: {schem_name}')
+            except FileNotFoundError:
+                await ctx.channel.send('Uh oh! Coś poszło nie tak!')
+                print(f'[{current_time()}] Błąd podczas wgrywania schematic o nazwie: {schem_name}')
+        except IndexError:
+            await ctx.channel.send('Uh oh! Coś poszło nie tak! Chyba nie podałeś pliku!')
+
+    # * Upload any file, you need to specify a path
+    @commands.command(pass_context=True)
+    @commands.has_permissions(ban_members=True)
+    async def makefile(self,ctx, arg):
+        try:
+            file_source = ctx.message.attachments[0].url
+            file_name = ctx.message.attachments[0].filename
+            r = requests.get(file_source, allow_redirects=True)
+            print(arg)
+            try:
+                await ctx.channel.send(f'Uploading {file_name}')
+                open(arg + file_name, 'wb').write(r.content)
+                print(f'[{current_time()}] Wgrano plik o nazwie: {file_name}')
+            except FileNotFoundError:
+                await ctx.channel.send('Uh oh! Coś poszło nie tak!')
+        except IndexError:
+            await ctx.channel.send('Uh oh! Coś poszło nie tak! Chyba nie podałeś pliku!')
+
+def current_time():
+    return time.strftime("%H:%M:%S")
 
 def setup(bot):
     bot.add_cog(mCogCommands(bot))

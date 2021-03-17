@@ -11,7 +11,7 @@ class mCogMisc(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self ,message):
         if str(message.author.display_name) == 'certyq' and message.channel != 'certyq':
-            if any(banned_url in message.content for banned_url in ["https://www.youtube.com/","https://youtu.be/","https://vm.tiktok.com","https://www.tiktok.com/", ".gif", "htpps://tenor.com"]):
+            if any(banned_url in message.content for banned_url in ["https://www.youtube.com/","https://youtu.be/","https://vm.tiktok.com","https://www.tiktok.com/", ".gif", "https://tenor.com", "-gif-"]):
                 await message.delete()
 
 def setup(bot):

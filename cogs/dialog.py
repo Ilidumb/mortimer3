@@ -10,19 +10,21 @@ DIALOGFLOW_PROJECT_ID = config['token-dialog']
 DIALOGFLOW_LANGUAGE_CODE = config['df-language-code']
 SESSION_ID = config['df-session-id']
 SERVICE_ACCOUNT_FILE = config['token-dialog']+'.json'
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
+CREDENTIALS = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
 
-class dialog(commands.Cog):
+CHANNELS = config['watched-channels']
+
+class Dialog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.channels = config['watched-channels']
     
     # * Getting the messages and checking for mentions
     @commands.Cog.listener()
     async def on_message(self, message):
         # Checking if the message was sent in a listened channel, and if it mentions the bot
-        if str(message.channel) in self.channels:
-            if str(self.bot.user.id) in message.content.lower() or str(self.bot.user.name).lower() in message.content.lower():
+        if str(message.channel) in CHANNELS:
+            if (str(self.bot.user.id) in message.content.lower() or
+                    str(self.bot.user.name).lower() in message.content.lower()):
                 await clean_message(self, message)
                 
 # * Splitting the message into content and author
@@ -82,17 +84,17 @@ async def exec_payload(self, json_response):
         pass
 
 # * Send request to the Dialogflow API
-def df_request(content):
-    session_client = dialogflow.SessionsClient(credentials=credentials)
+def df_request(dialog_input):
+    session_client = dialogflow.SessionsClient(credentials=CREDENTIALS)
     session = session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
-    text_input = dialogflow.types.TextInput(text=(content), language_code=DIALOGFLOW_LANGUAGE_CODE)
+    text_input = dialogflow.types.TextInput(text=(dialog_input), language_code=DIALOGFLOW_LANGUAGE_CODE)
     query_input = dialogflow.types.QueryInput(text=text_input)
     response = session_client.detect_intent(session=session, query_input=query_input)
     json_response = MessageToJson(response)
     return json_response
 
 def current_time():
-    return strftime("%H:%M:%S")
+    return strftime('%H:%M:%S')
 
 def setup(bot):
-    bot.add_cog(dialog(bot))
+    bot.add_cog(Dialog(bot))

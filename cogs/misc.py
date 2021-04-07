@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class mCogMisc(commands.Cog):
+class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -15,4 +15,4 @@ class mCogMisc(commands.Cog):
                 await message.delete()
 
 def setup(bot):
-    bot.add_cog(mCogMisc(bot))
+    bot.add_cog(Misc(bot))

@@ -4,7 +4,7 @@ from discord import File
 from os import listdir
 from os.path import isfile, join
 
-class mCogCommands(commands.Cog):
+class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
@@ -31,23 +31,13 @@ class mCogCommands(commands.Cog):
         channel = self.bot.get_channel(int(target_channel[2:20]))
         await channel.send(" ".join(args[:]))
         print(f'[{current_time()}] Ręcznie wysłano wiadomość: {" ".join(args[:])}.')
-    
-    @commands.command(pass_context=True)
-    @commands.has_permissions(ban_members=True)
-    async def shutdown(self,ctx):
-        print("shutdown")
-        try:
-            await self.bot.logout()
-        except:
-            print("EnvironmentError")
-            self.bot.clear()
 
     # * Update command, mega janky (it works though)
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def update(self,ctx):
         # Make sure the messagecounter is saved before updating and restarting
-        await ctx.invoke(self.bot.get_command('fsaveactivity'))
+        await ctx.invoke(self.bot.get_command('force_save_activity'))
         await ctx.channel.send('Restarting!')
         # Run git pull and restart
         from subprocess import Popen
@@ -159,4 +149,4 @@ def current_time():
     return time.strftime("%H:%M:%S")
 
 def setup(bot):
-    bot.add_cog(mCogCommands(bot))
+    bot.add_cog(Commands(bot))

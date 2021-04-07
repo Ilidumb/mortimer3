@@ -30,12 +30,12 @@ class Monolog(commands.Cog):
     async def trigger_monolog(self, ctx):
         await send_monolog(self, 'community2nSH')
 
-    @tasks.loop(minutes=randint(1, 5))
+    @tasks.loop(minutes=randint(120, 180))
     async def loop_reklama(self):
         if self.monolog_loop:
             await send_monolog(self, 'community2nSH')
     
-    @tasks.loop(minutes=randint(7, 10))
+    @tasks.loop(minutes=randint(120, 180))
     async def loop_zaczepka(self):
         if self.monolog_loop:
             channel = self.bot.get_channel(728252426544742510)
@@ -58,7 +58,7 @@ async def zaczepka(self, message):
 
 async def send_monolog(self, phrase):
     json_response = json.loads(df_request(phrase))
-    channel = self.bot.get_channel(702951480201838763)
+    channel = self.bot.get_channel(590444336249045004)
 
     await channel.send(f'{json_response["queryResult"]["fulfillmentText"]}')
     print(f'[{current_time()}] Monolog: {json_response["queryResult"]["fulfillmentText"]}')
